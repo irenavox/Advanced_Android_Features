@@ -1,0 +1,83 @@
+package com.example.eggtimer;
+
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+    Button buttonVar;
+    SeekBar seekBarVar;
+    TextView timeVar;
+    int howManySeconds;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        buttonVar = findViewById(R.id.buttonWidget);
+        seekBarVar = findViewById(R.id.seekBarWidget);
+        timeVar = findViewById(R.id.timeWidget);
+        MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.timersound);
+        seekBarVar.setMax(600); // in seconds
+        seekBarVar.setProgress(30);
+        seekBarVar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                int min = 10;
+                if (i < min) {
+                    howManySeconds = min;
+                } else {
+                    howManySeconds = i;
+                }
+                Log.i("Value", String.valueOf(howManySeconds));
+
+                timeVar.setText(String.valueOf(howManySeconds));
+
+                buttonVar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int interval = howManySeconds/1000;
+                        CountDownTimer start = new CountDownTimer(howManySeconds, interval) {
+                            @Override
+                            public void onTick(long howManySeconds) {
+                                timeVar.setText(String.valueOf(howManySeconds));
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                Log.i("Status", "Finita");
+                                timeVar.setText( "Ready!");
+
+                                mediaPlayer.start();
+
+                            }
+                        }.start();
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        }
+
+    }
